@@ -64,7 +64,7 @@ sub getinfo {
 	foreach my $arr (@_){
 		foreach my $fn (@{$arr}){
 			next if exists $info{$fn};
-			my $v=`du -s $fn`;
+			my $v=`du -s "$fn"`;
 			$v=~/ .*/;
 			$info{$fn}->{size}=$v;
 			$info{$fn}->{typ}="";

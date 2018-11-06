@@ -1,0 +1,7 @@
+/debian/files
+/debian/ctreesize.debhelper.log
+/debian/ctreesize
+/debian/ctreesize.substvars
+/debian/tmp
+/debian/debhelper-build-stamp
+/debian/.debhelper

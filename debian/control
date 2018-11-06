@@ -1,0 +1,10 @@
+Source: ctreesize
+Section: admin
+Priority: optional
+Maintainer: Frank Duckhorn <frank@bitboulder.net>
+Standards-Version: 1.0
+
+Package: ctreesize
+Architecture: all
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: TODO
