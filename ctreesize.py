@@ -1,8 +1,13 @@
 #!/usr/bin/python3
 
-import sys,os,stat
+import sys,os,stat,time
+
+scant=[None]
 
 def getsize(fn,dev):
+    t=time.time()
+    if scant[0] is None: scant[0]=t
+    if t-scant[0]>5: print(f'scan {fn}'); scant[0]=t
     st=os.stat(fn,follow_symlinks=False)
     if st.st_dev!=dev: return 'm',0
     if stat.S_ISDIR(st.st_mode) and not stat.S_ISLNK(st.st_mode):
@@ -38,6 +43,7 @@ def sifmt(v):
     return (fmt%v)+ext[0]
 
 def prtfns(dn):
+    scant[0]=None
     fns=getfns(dn)
     print(f'##### {dn} #####')
     print(f'  0:    --    -- d ..')
