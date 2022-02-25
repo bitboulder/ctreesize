@@ -2,8 +2,9 @@
 
 import sys,os,stat
 
-def getsize(fn):
+def getsize(fn,dev):
     st=os.stat(fn,follow_symlinks=False)
+    if st.st_dev!=dev: return 'm',0
     if stat.S_ISDIR(st.st_mode) and not stat.S_ISLNK(st.st_mode):
         fns=getfns(fn)
         return 'd',st.st_blocks*512+sum(si for typ,si in fns.values())
@@ -14,8 +15,9 @@ def getsize(fn):
 
 def getfns(dn):
     if not dn in dns:
+        dev=os.stat(dn).st_dev
         dns[dn]={
-            fn:getsize(fn)
+            fn:getsize(fn,dev)
             for fn in map(lambda fn:os.path.join(dn,fn),os.listdir(dn))
         }
     return dns[dn]
@@ -41,9 +43,11 @@ def prtfns(dn):
     print(f'  0:    --    -- d ..')
     sisum=sum(si for typ,si in fns.values())
     ret=[]
-    for fn,(typ,si) in sorted(fns.items(),key=lambda v:-v[1][1]):
+    for i,(fn,(typ,si)) in enumerate(sorted(fns.items(),key=lambda v:-v[1][1])):
+        if i==20: print(' [..] '); break
         if typ=='d': ret.append(fn)
-        print((f'{len(ret):3d}:' if typ=='d' else '    ')+f' {prcfmt(si/sisum):>5s} {sifmt(si):>5s} {typ} {os.path.basename(fn)}')
+        print((f'{len(ret):3d}:' if typ=='d' else ' '*4)+f' {prcfmt(si/sisum):>5s} {sifmt(si):>5s} {typ} {os.path.basename(fn)}')
+    print(' '*(4+1+5+1)+f'{sifmt(sisum):5>s}   Sum')
     return ret
 
 
