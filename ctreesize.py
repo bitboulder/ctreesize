@@ -21,9 +21,13 @@ def getsize(fn,dev):
 def getfns(dn):
     if not dn in dns:
         dev=os.stat(dn).st_dev
+        try: fns=os.listdir(dn)
+        except PermissionError:
+            print(f'WARN: Directory not readable {dn}',file=sys.stderr)
+            dns[dn]={}; return dns[dn]
         dns[dn]={
             fn:getsize(fn,dev)
-            for fn in map(lambda fn:os.path.join(dn,fn),os.listdir(dn))
+            for fn in map(lambda fn:os.path.join(dn,fn),fns)
         }
     return dns[dn]
 
